@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solana AirDrop (devNet)</title>
+    <style>
+      body {
+        padding: 30px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <br />
+    <h1>Solana Air Drop</h1>
+    <p>(devnet)</p>
+    <br />
+    <div></div>
+    <xy-layout center>
+      <xy-form>
+        <xy-input-group>
+          <xy-input
+            placeholder="address"
+            id="address"
+            required
+            style="width: 500 !important; text-align: left"
+          ></xy-input>
+          <xy-button id="btn" type="primary">Airdrop</xy-button>
+        </xy-input-group>
+      </xy-form>
+    </xy-layout>
+    <script type="module">
+      import "https://unpkg.com/xy-ui"
+      import "https://unpkg.com/loadsh"
+      onsubmit = () => {
+        if (!address.validity) {
+          XyMessage.error("please input address of your wallet address", 1e3)
+          return
+        }
+        btn.disabled = true
+        btn.loading = true
+        const random = _.random(1, 5, false)
+        fetch("https://api.devnet.solana.com/", {
+          headers: {
+            accept: "*/*",
+            "content-type": "application/json",
+          },
+          referrerPolicy: "strict-origin-when-cross-origin",
+          body:
+            '{"method":"requestAirdrop","jsonrpc":"2.0","params":["' +
+            address.value +
+            '",' +
+            random +
+            '000000000],"id":"ffc6fdfe-d29a-4cbc-ba7e-615cde8f3144"}',
+          method: "POST",
+          mode: "cors",
+          credentials: "omit",
+        }).then(() => {
+          btn.loading = false
+          btn.disabled = false
+          XyDialog.alert({
+            title: "succeed",
+            oktext: `ok👌`,
+            content: `your get ${random} sol`,
+          })
+        })
+      }
+      btn.onclick = onsubmit
+    </script>
+  </body>
+</html>
